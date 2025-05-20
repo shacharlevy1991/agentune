@@ -1,6 +1,6 @@
-# Template Package Project - Folder Structure
+# SOP Generator - Folder Structure
 
-This document outlines the high-level folder structure for the template package project.
+This document outlines the high-level folder structure for the SOP Generator project.
 
 ## Overview
 
@@ -12,14 +12,13 @@ This document outlines the high-level folder structure for the template package 
 ├── docs/
 │   ├── development/
 │   └── usage/
-├── src/
-│   └── template_package/
+├── sop_generator/
 └── tests/
 ```
 
 ## Key Directories
 
-- `src/` - Source code
+- `sop_generator/` - Source code
 - `tests/` - Test files
 - `docs/` - Documentation
   - `development/` - Developer documentation

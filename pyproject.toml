@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A tool for generating Standard Operating Procedures (SOPs)"
 authors = ["SparkBeyond <info@sparkbeyond.com>"]
 readme = "README.md"
-packages = [{include = "sop_generator", from = "src"}]
+packages = [{include = "sop_generator"}]
 license = "MIT"
 repository = "https://github.com/SparkBeyond/sop_generator"
 documentation = "https://github.com/SparkBeyond/sop_generator"
@@ -47,6 +47,8 @@ disable_error_code = [
     "truthy-function", "redundant-cast", "var-annotated",
     "override", "import-untyped", "import-not-found"
 ]
+
+# Cache settings
 cache_dir = ".mypy_cache"
 incremental = true
 
