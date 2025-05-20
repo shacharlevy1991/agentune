@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "template_package"
+name = "sop_generator"
 version = "0.1.0"
-description = "Short description of your package"
-authors = ["Your Name <your.email@example.com>"]
+description = "A tool for generating Standard Operating Procedures (SOPs)"
+authors = ["SparkBeyond <info@sparkbeyond.com>"]
 readme = "README.md"
-packages = [{include = "template_package", from = "src"}]
-license = "MIT"  # Update license as needed
-repository = "https://github.com/yourusername/your-package-name"
-documentation = "https://your-package-name.readthedocs.io"
+packages = [{include = "sop_generator", from = "src"}]
+license = "MIT"
+repository = "https://github.com/SparkBeyond/sop_generator"
+documentation = "https://github.com/SparkBeyond/sop_generator"
 
 
 [tool.poetry.dependencies]
