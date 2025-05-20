@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "template_package"
+version = "0.1.0"
+description = "Short description of your package"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "template_package", from = "src"}]
+license = "MIT"  # Update license as needed
+repository = "https://github.com/yourusername/your-package-name"
+documentation = "https://your-package-name.readthedocs.io"
+
+
+[tool.poetry.dependencies]
+python = "3.12.6"
+# Add your dependencies here
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+mypy = "^1.7.0"
+ruff = "^0.1.6"
+pre-commit = "^3.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]                         # top-level
+target-version = "py312"            # align with project requirements
+line-length = 100                   # matches your guideline
+
+[tool.ruff.lint]
+# Linter configuration
+select = ["E", "F"]  # Only the essentials
+ignore = ["E203", "E266", "E501"]  # Relax whitespace & long-line rules
+
+[tool.mypy]
+# Type checking configuration
+python_version = "3.12"
+show_error_codes = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unreachable = true
+no_implicit_optional = true
+disable_error_code = [
+    "truthy-function", "redundant-cast", "var-annotated",
+    "override", "import-untyped", "import-not-found"
+]
+cache_dir = ".mypy_cache"
+incremental = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
