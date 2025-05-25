@@ -1,20 +1,20 @@
-# SOP Generator
+# Chat Simulator
 
-A tool for generating Standard Operating Procedures (SOPs) from chats.
+A tool for simulating Customer-Agent conversations based on real chat data.
 
 ## Quick Start
 
 1. Clone this repository
    ```bash
-   git clone git@github.com:SparkBeyond/sop_generator.git
-   cd sop_generator
+   git clone git@github.com:SparkBeyond/chat_simulator.git
+   cd chat_simulator
    ```
 
 2. Set up the development environment (see [Development Guide](./docs/development/dev_guide.md))
 
 ## Project Structure
 
-- `src/sop_generator/` - Package source code
+- `chat_simulator/` - Package source code
 - `tests/` - Test files
 - `docs/` - Project documentation
 

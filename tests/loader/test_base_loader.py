@@ -4,8 +4,8 @@ import pytest
 from pathlib import Path
 from typing import List
 
-from sop_generator.loader.base import ChatLoader
-from sop_generator.models import Conversation
+from chat_simulator.loader.base import ChatLoader
+from chat_simulator.models import Conversation
 
 
 def test_chat_loader_is_abstract():

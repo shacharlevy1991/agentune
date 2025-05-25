@@ -1,6 +1,6 @@
-# SOP Generator - Folder Structure
+# Chat Simulator - Folder Structure
 
-This document outlines the high-level folder structure for the SOP Generator project.
+This document outlines the high-level folder structure for the Chat Simulator project.
 
 ## Overview
 
@@ -12,13 +12,13 @@ This document outlines the high-level folder structure for the SOP Generator pro
 ├── docs/
 │   ├── development/
 │   └── usage/
-├── sop_generator/
+├── chat_simulator/
 └── tests/
 ```
 
 ## Key Directories
 
-- `sop_generator/` - Source code
+- `chat_simulator/` - Source code
 - `tests/` - Test files
 - `docs/` - Documentation
   - `development/` - Developer documentation

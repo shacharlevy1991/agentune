@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from sop_generator.models import Conversation, Message, MessageRole
+from chat_simulator.models import Conversation, Message, MessageRole
 
 
 @pytest.fixture(scope="session", autouse=True)

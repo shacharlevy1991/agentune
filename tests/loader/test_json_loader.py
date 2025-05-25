@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from sop_generator.loader.json_loader import JsonChatLoader
-from sop_generator.models import Conversation
+from chat_simulator.loader.json_loader import JsonChatLoader
+from chat_simulator.models import Conversation
 
 
 class TestJsonChatLoader:

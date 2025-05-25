@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "sop_generator"
+name = "chat_simulator"
 version = "0.1.0"
-description = "A tool for generating Standard Operating Procedures (SOPs)"
+description = "A tool for simulating Customer-Agent conversations based on real chat data"
 authors = ["SparkBeyond <info@sparkbeyond.com>"]
 readme = "README.md"
-packages = [{include = "sop_generator"}]
+packages = [{include = "chat_simulator"}]
 license = "MIT"
-repository = "https://github.com/SparkBeyond/sop_generator"
-documentation = "https://github.com/SparkBeyond/sop_generator"
+repository = "https://github.com/SparkBeyond/chat_simulator"
+documentation = "https://github.com/SparkBeyond/chat_simulator"
 
 
 [tool.poetry.dependencies]
@@ -16,8 +16,8 @@ python = "3.12.6"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
-mypy = "^1.7.0"
-ruff = "^0.1.6"
+mypy = "^1.15.0"
+ruff = "^0.11.11"
 pre-commit = "^3.5.0"
 
 

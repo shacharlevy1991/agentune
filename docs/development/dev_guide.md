@@ -6,7 +6,6 @@ This guide provides instructions for setting up your development environment and
 
 - [pyenv](https://github.com/pyenv/pyenv) - Python version management (optional)
 - [Poetry](https://python-poetry.org/) - Python dependency management
-- [Git](https://git-scm.com/) - Version control
 
 ## Environment Setup
 
@@ -107,10 +106,11 @@ You can also run static type checking and linting manually:
 
 ```bash
 # Run ruff
-poetry run ruff check src/
+
+poetry run ruff check chat_simulator/
 
 # Run mypy
-poetry run mypy src/
+poetry run mypy chat_simulator/
 ```
 
 ### Applying Fixes Automatically (Ruff)
@@ -118,7 +118,7 @@ You can apply fixes automatically when possible:
 
 ```bash
 # Fix issues automatically when possible
-ruff check --fix src/
+poetry run ruff check --fix chat_simulator/
 ```
 
 Following automatic fixes, check the changes and make sure they are correct.

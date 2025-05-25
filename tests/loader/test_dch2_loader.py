@@ -5,8 +5,8 @@ from datetime import datetime
 
 import pytest
 
-from sop_generator.loader.dch2_loader import DCH2JsonLoader
-from sop_generator.models import Conversation, MessageRole
+from chat_simulator.loader.dch2_loader import DCH2JsonLoader
+from chat_simulator.models import Conversation, MessageRole
 
 
 class TestDCH2JsonLoader:

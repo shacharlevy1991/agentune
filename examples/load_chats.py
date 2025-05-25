@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from sop_generator.loader import DCH2JsonLoader
+from chat_simulator.loader import DCH2JsonLoader
 
 
 def main():
@@ -11,7 +11,8 @@ def main():
     
     # Load the conversations
     print(f"Loading conversations from {data_path}...")
-    conversations = DCH2JsonLoader.load(data_path)
+    loader = DCH2JsonLoader()
+    conversations = loader.load(data_path)
     
     # Print some stats
     print(f"\nLoaded {len(conversations)} conversations")

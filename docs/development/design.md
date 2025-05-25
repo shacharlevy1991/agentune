@@ -9,55 +9,36 @@ Process: Chat Data → Clean → Summarize → Cluster → Generate SOPs
 1. **Data Models** (`models.py`)
    - `Message`: Single chat message (customer/agent roles)
    - `Conversation`: Complete chat session with messages
-   - `ConversationCluster`: Group of similar conversations
-   - `SOP`: Generated Standard Operating Procedure
+   - `Outcome`: Chat outcome (e.g., resolved, escalated)
 
-2. **Data Pipeline**
-   - Loader: Parse chat data (JSON/CSV) into models
-   - Preprocessor: Clean and normalize text
-   - Filter: Remove noise, duplicates, PII (future)
+2. **Main components**
+   - Customer
+   - Agent
+   - ConversationRunner
 
-3. **Analysis**
-   - Summarize conversations
-   - Cluster by similarity (HDBSCAN + embeddings)
-   - Identify key topics per cluster
+3. **Simulation techniques**
+   - Fine-tuned LLMs
+   - RAG using existing chats as context
 
-4. **SOP Generation**
-   - Create structured SOPs from clusters
-   - Include relevant examples
-   - Generate multiple formats (Markdown/HTML)
+4. **Simulators**
+   - CustomerSimulator - base class
+   - AgentSimulator - base class
 
-## Implementation Status
-
-✅ **Data Models**
-- Basic conversation structure
-- Message types and roles
-- SOP document format
-
-⏳ **Next Up**
-1. Data loader for chat format
-2. Text preprocessing pipeline
-3. Basic clustering implementation
 
 ## Processing Flow
 
 ```mermaid
 flowchart TD
     A[Load Chats] --> B[Clean & Filter]
-    B --> C[Generate Summaries]
-    C --> D[Cluster Summaries]
-    D --> E{For Each Cluster}
-    E --> F[Identify Topics]
-    F --> G[Generate SOPs]
-    G --> H[Save Output]
+    
 ```
 
 ## Technical Considerations
 
 ### Performance
-- Batch processing
-- Caching of embeddings and intermediate results
-- Parallel processing where applicable
+- Async LLM calls
+- Caching of LLM calls
+- Parallel chat execution
 
 ### Frameworks
 - Use langchain for LLM integration
@@ -65,13 +46,8 @@ flowchart TD
 
 ### Quality Control
 - Logging and monitoring
-- Human validation points: cluster topics, SOP content
+- Human validation points: simulated chats
 
 ### Extensibility
 - Plugin architecture for input/output formats (future feature)
 - Configurable LLM providers
-- Template-based output generation (future feature)
-
-## Non-Goals
-- Updating existing SOPs
-- Real-time processing
