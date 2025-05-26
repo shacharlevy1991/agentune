@@ -69,8 +69,6 @@ class DCH2JsonLoader(JsonChatLoader):
             "customer": MessageRole.CUSTOMER,
             "helpdesk": MessageRole.AGENT,
             "agent": MessageRole.AGENT,  # Support both 'helpdesk' and 'agent' as valid agent roles
-            "system": MessageRole.SYSTEM,
-            "bot": MessageRole.BOT
         }
         
         role = role_map.get(sender.lower())

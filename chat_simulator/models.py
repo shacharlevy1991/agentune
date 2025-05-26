@@ -10,8 +10,6 @@ class MessageRole(str, Enum):
     """Represents the role of a message sender."""
     CUSTOMER = "customer"
     AGENT = "agent"
-    SYSTEM = "system"
-    BOT = "bot"
 
 
 @dataclass

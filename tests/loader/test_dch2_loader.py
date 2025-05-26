@@ -71,9 +71,10 @@ class TestDCH2JsonLoader:
         loader = DCH2JsonLoader()
         assert loader._map_role("customer") == MessageRole.CUSTOMER
         assert loader._map_role("agent") == MessageRole.AGENT
-        assert loader._map_role("system") == MessageRole.SYSTEM
-        assert loader._map_role("bot") == MessageRole.BOT
+        assert loader._map_role("helpdesk") == MessageRole.AGENT  # Test alias for agent
         
         # Test that unknown roles raise an error
         with pytest.raises(ValueError, match="Unknown sender role: unknown"):
             loader._map_role("unknown")
+        with pytest.raises(ValueError, match="Unknown sender role: system"):
+            loader._map_role("system")
