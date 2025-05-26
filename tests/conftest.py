@@ -48,16 +48,14 @@ def sample_conversation() -> Conversation:
     """Return a sample conversation for testing."""
     return Conversation(
         id="test_conv_1",
-        messages=[
+        messages=(
             Message(
                 content="Hello, I need help with my order",
-                role=MessageRole.CUSTOMER,
-                metadata={"test": True}
+                role=MessageRole.CUSTOMER
             ),
             Message(
                 content="I'd be happy to help. What's your order number?",
-                role=MessageRole.AGENT,
-                metadata={"test": True}
+                role=MessageRole.AGENT
             )
-        ]
+        )
     )

@@ -23,7 +23,7 @@ class TestJsonChatLoader:
 
         class TestLoader(JsonChatLoader):
             def parse_conversation(self, raw):
-                return Conversation(id="test", messages=[])
+                return Conversation(id="test", messages=())
 
         with pytest.raises(ValueError, match="Invalid JSON"):
             TestLoader().load(test_file)
@@ -37,7 +37,7 @@ class TestJsonChatLoader:
             def parse_conversation(self, raw):
                 return Conversation(
                     id=raw["dialogue_id"],
-                    messages=[]
+                    messages=()
                 )
 
         result = TestLoader().load(test_file)

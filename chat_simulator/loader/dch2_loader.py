@@ -1,7 +1,7 @@
 """Loader for DCH2 processed chat format."""
 
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 from ..models import Conversation, Message, MessageRole
 from .json_loader import JsonChatLoader
@@ -15,7 +15,7 @@ class DCH2JsonLoader(JsonChatLoader):
     This loader handles the specific JSON format used in the DCH2 dataset.
     """
     
-    def parse_conversation(self, raw: Dict[str, Any]) -> Conversation:
+    def parse_conversation(self, raw: dict[str, Any]) -> Conversation:
         """Parse a single conversation from DCH2 JSON format.
         
         Args:
@@ -39,7 +39,7 @@ class DCH2JsonLoader(JsonChatLoader):
             
             return Conversation(
                 id=str(raw["dialogue_id"]),
-                messages=messages
+                messages=tuple(messages)
             )
             
         except KeyError as e:

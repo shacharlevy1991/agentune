@@ -39,11 +39,31 @@ squares = [x * x for x in range(10)]
 - Use descriptive and consistent naming for variables, functions, classes, and modules.
 - Follow standard Python naming conventions (e.g., `snake_case` for functions and variables, `CamelCase` for classes).
 
-## 5. Comprehensive Documentation
+## 5. Entity Definition with attrs
+- Use the **attrs library** for defining entities (dataclasses that are part of the public API)
+- Use `@attrs.frozen` for immutable entities to ensure hashability and thread safety
+- Example:
+```python
+import attrs
+
+@attrs.frozen
+class Person:
+    name: str
+    age: int = 0
+```
+
+## 6. Modern Type Hints (Python 3.12+)
+- Use modern Python 3.12 type hint syntax and features
+- Avoid deprecated `typing` module aliases (use `list` not `typing.List`, `collections.abc.Iterable` not `typing.Iterable`)
+- Use new generic class syntax: `class Foo[T]:` instead of extending `Generic[T]`
+- Prefer type bounds: `class Foo[F: Bar]:` over explicit `TypeVar` declarations
+- For interfaces and dataclasses: use `collections.abc.Iterable` for inputs, `tuple` for outputs and attributes
+
+## 7. Comprehensive Documentation
 - Include docstrings for all public modules, classes, functions, and methods, following PEP 257 conventions.
 - Provide clear descriptions of the purpose, parameters, return values, and exceptions.
 
-## 6. Linting and Static Type Checking
+## 8. Linting and Static Type Checking
 - Use ruff for linting Python code
 - Use mypy for static type checking
 - These tools are configured to run automatically via pre-commit hooks
@@ -51,16 +71,16 @@ squares = [x * x for x in range(10)]
 ### Running Ruff
 ```bash
 # Check your code with ruff
-python -m ruff check src/
+poetry run ruff check chat_simulator/
 
 # Fix issues automatically when possible
-python -m ruff check --fix src/
+poetry run ruff check --fix chat_simulator/
 ```
 
 ### Running Mypy
 ```bash
 # Run mypy for type checking
-python -m mypy src/
+poetry run mypy chat_simulator/
 ```
 
 ### Pre-commit Hooks
@@ -76,7 +96,7 @@ pre-commit run --all-files
 
 Once installed, the hooks run automatically during each commit. If issues are found, the commit will be rejected with details about what needs to be fixed.
 
-## 7. Additional decisions
+## 9. Additional decisions
 - Package management: Use poetry for dependency management
 - logging: Use the standard logging module
 - testing: Use pytest for testing

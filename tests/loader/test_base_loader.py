@@ -2,7 +2,6 @@
 
 import pytest
 from pathlib import Path
-from typing import List
 
 from chat_simulator.loader.base import ChatLoader
 from chat_simulator.models import Conversation
@@ -26,14 +25,14 @@ def test_chat_loader_requires_load_method():
 class TestDummyLoader(ChatLoader):
     """A concrete implementation of ChatLoader for testing."""
     
-    def load(self, source: Path) -> List[Conversation]:
+    def load(self, source: Path) -> tuple[Conversation, ...]:
         """Load conversations from a source."""
-        return [
+        return (
             Conversation(
                 id="dummy_1",
-                messages=[]
-            )
-        ]
+                messages=()
+            ),
+        )
 
 
 def test_concrete_loader_implementation():

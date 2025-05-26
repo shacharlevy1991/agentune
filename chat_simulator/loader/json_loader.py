@@ -3,7 +3,7 @@
 import json
 from abc import abstractmethod
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any
 
 from .base import ChatLoader
 from ..models import Conversation
@@ -12,14 +12,14 @@ from ..models import Conversation
 class JsonChatLoader(ChatLoader):
     """Base class for JSON-based chat loaders."""
     
-    def load(self, source: Path) -> List[Conversation]:
+    def load(self, source: Path) -> tuple[Conversation, ...]:
         """Load conversations from a JSON file.
         
         Args:
             source: Path to the JSON file
             
         Returns:
-            List of parsed conversations
+            Tuple of parsed conversations
             
         Raises:
             ValueError: If the JSON is invalid
@@ -27,12 +27,12 @@ class JsonChatLoader(ChatLoader):
         try:
             with open(source, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            return [self.parse_conversation(item) for item in data]
+            return tuple(self.parse_conversation(item) for item in data)
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON in {source}: {e}") from e
     
     @abstractmethod
-    def parse_conversation(self, raw: Dict[str, Any]) -> Conversation:
+    def parse_conversation(self, raw: dict[str, Any]) -> Conversation:
         """Parse a single conversation from raw JSON data.
         
         Args:

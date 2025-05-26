@@ -1,9 +1,7 @@
 """Data models for chat-based SOP generation."""
-
-from dataclasses import dataclass
+import attrs
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 
 class MessageRole(str, Enum):
@@ -12,7 +10,7 @@ class MessageRole(str, Enum):
     AGENT = "agent"
 
 
-@dataclass
+@attrs.frozen
 class Message:
     """A single message in a conversation.
     
@@ -23,36 +21,36 @@ class Message:
     """
     content: str
     role: MessageRole
-    timestamp: Optional[datetime] = None
+    timestamp: datetime | None = None
 
     def __str__(self) -> str:
         return f"[{self.role.upper()}] {self.content}"
 
 
-@dataclass
+@attrs.frozen
 class Conversation:
     """A complete conversation between participants.
     
     Attributes:
         id: Unique identifier for the conversation
-        messages: List of messages in chronological order
+        messages: Tuple of messages in chronological order
         outcome: Optional string-based conversation outcome (e.g., "resolved", "escalated")
         satisfaction: Optional integer (1-10) representing customer satisfaction
     """
     id: str
-    messages: List[Message]
-    outcome: Optional[str] = None
-    satisfaction: Optional[int] = None
-    
+    messages: tuple[Message, ...]
+    outcome: str | None = None
+    satisfaction: int | None = None
+   
     @property
-    def customer_messages(self) -> List[Message]:
+    def customer_messages(self) -> tuple[Message, ...]:
         """Get all messages from the customer."""
-        return [msg for msg in self.messages if msg.role == MessageRole.CUSTOMER]
+        return tuple(msg for msg in self.messages if msg.role == MessageRole.CUSTOMER)
     
     @property
-    def agent_messages(self) -> List[Message]:
+    def agent_messages(self) -> tuple[Message, ...]:
         """Get all messages from agents."""
-        return [msg for msg in self.messages if msg.role == MessageRole.AGENT]
+        return tuple(msg for msg in self.messages if msg.role == MessageRole.AGENT)
     
     def __str__(self) -> str:
         total = len(self.messages)

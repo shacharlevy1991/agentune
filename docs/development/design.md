@@ -34,8 +34,9 @@ Process: Chat Data → Clean → Summarize → Cluster → Generate SOPs
 - Parallel chat execution
 
 ### Frameworks
-- Use langchain for LLM integration
+- Use langchain for LLM integration (with async chains)
 - Consider using Langchain for caching LLM results and embeddings
+- All LLM calls through LangChain should use async methods
 
 ### Extensibility
 - Plugin architecture for input/output formats (future feature)
