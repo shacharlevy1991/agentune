@@ -8,8 +8,9 @@ Process: Chat Data → Clean → Summarize → Cluster → Generate SOPs
 
 1. **Data Models** (`models.py`)
    - `Message`: Single chat message (customer/agent roles)
-   - `Conversation`: Complete chat session with messages
-   - `Outcome`: Chat outcome (e.g., resolved, escalated)
+   - `Conversation`: Complete chat session with messages and optional outcome
+   - `Outcome`: Optional string-based conversation outcome (e.g., "resolved", "escalated", "sale_completed"). Can be provided by user or extracted from chat content. User will provide a dictionary between and outcome and description. When not provided, we can potentially learn about the exsiting outcomes from chats.
+   - `Customer Satisfaction`: Optional integer (1-10 scale) representing customer satisfaction for the conversation. Future support for other formats (e.g., categories, NPS, etc.) is planned. If not supplied, we can try to evaluate it automatically.
 
 2. **Main components**
    - Customer
@@ -25,14 +26,6 @@ Process: Chat Data → Clean → Summarize → Cluster → Generate SOPs
    - AgentSimulator - base class
 
 
-## Processing Flow
-
-```mermaid
-flowchart TD
-    A[Load Chats] --> B[Clean & Filter]
-    
-```
-
 ## Technical Considerations
 
 ### Performance
@@ -43,10 +36,6 @@ flowchart TD
 ### Frameworks
 - Use langchain for LLM integration
 - Consider using Langchain for caching LLM results and embeddings
-
-### Quality Control
-- Logging and monitoring
-- Human validation points: simulated chats
 
 ### Extensibility
 - Plugin architecture for input/output formats (future feature)
