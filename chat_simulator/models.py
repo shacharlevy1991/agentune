@@ -1,9 +1,9 @@
 """Data models for chat-based SOP generation."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 
 
 class MessageRole(str, Enum):
@@ -20,12 +20,10 @@ class Message:
         content: The text content of the message
         role: The role of the message sender
         timestamp: When the message was sent (optional)
-        metadata: Additional metadata about the message
     """
     content: str
     role: MessageRole
     timestamp: Optional[datetime] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __str__(self) -> str:
         return f"[{self.role.upper()}] {self.content}"
@@ -38,11 +36,13 @@ class Conversation:
     Attributes:
         id: Unique identifier for the conversation
         messages: List of messages in chronological order
-        metadata: Additional metadata about the conversation
+        outcome: Optional string-based conversation outcome (e.g., "resolved", "escalated")
+        satisfaction: Optional integer (1-10) representing customer satisfaction
     """
     id: str
     messages: List[Message]
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    outcome: Optional[str] = None
+    satisfaction: Optional[int] = None
     
     @property
     def customer_messages(self) -> List[Message]:
@@ -55,4 +55,15 @@ class Conversation:
         return [msg for msg in self.messages if msg.role == MessageRole.AGENT]
     
     def __str__(self) -> str:
-        return f"Conversation {self.id} ({len(self.messages)} messages)"
+        total = len(self.messages)
+        if total == 0:
+            return f"Conversation {self.id} (0 messages): <empty>"
+
+        if total <= 20:
+            messages_str = "\n".join(str(msg) for msg in self.messages)
+        else:
+            first = "\n".join(str(msg) for msg in self.messages[:10])
+            last = "\n".join(str(msg) for msg in self.messages[-10:])
+            messages_str = f"{first}\n...\n{last}"
+
+        return f"Conversation {self.id} ({total} messages):\n{messages_str}"

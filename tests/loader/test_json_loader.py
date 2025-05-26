@@ -37,12 +37,10 @@ class TestJsonChatLoader:
             def parse_conversation(self, raw):
                 return Conversation(
                     id=raw["dialogue_id"],
-                    messages=[],
-                    metadata={"source": raw.get("source", "")}
+                    messages=[]
                 )
 
         result = TestLoader().load(test_file)
         assert len(result) == 2
         assert result[0].id == "conv_123"
         assert result[1].id == "conv_124"
-        assert result[0].metadata["source"] == "test_fixture"

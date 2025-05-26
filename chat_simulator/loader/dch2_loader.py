@@ -32,22 +32,14 @@ class DCH2JsonLoader(JsonChatLoader):
                 Message(
                     content=msg["text"],
                     role=self._map_role(msg["sender"]),
-                    timestamp=datetime.fromisoformat(ts) if (ts := msg.get("timestamp")) else None,
-                    metadata={
-                        "original_data": msg,
-                        "nugget_label": msg.get("consolidated_nugget_label")
-                    }
+                    timestamp=datetime.fromisoformat(ts) if (ts := msg.get("timestamp")) else None
                 )
                 for msg in raw["turns"]
             ]
             
             return Conversation(
                 id=str(raw["dialogue_id"]),
-                messages=messages,
-                metadata={
-                    "source": raw.get("source", "dch2_processed_train.json"),
-                    "quality_scores": raw.get("consolidated_quality_scores", {})
-                }
+                messages=messages
             )
             
         except KeyError as e:

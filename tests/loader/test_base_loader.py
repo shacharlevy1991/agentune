@@ -31,8 +31,7 @@ class TestDummyLoader(ChatLoader):
         return [
             Conversation(
                 id="dummy_1",
-                messages=[],
-                metadata={"source": str(source)}
+                messages=[]
             )
         ]
 
@@ -46,4 +45,3 @@ def test_concrete_loader_implementation():
     
     assert len(result) == 1
     assert result[0].id == "dummy_1"
-    assert result[0].metadata["source"] == str(test_file)

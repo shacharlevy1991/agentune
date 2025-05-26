@@ -21,7 +21,6 @@ class TestDCH2JsonLoader:
         assert isinstance(result, Conversation)
         assert result.id == "conv_123"
         assert len(result.messages) == 4
-        assert result.metadata["source"] == "test_fixture"
         
         # Check first message
         assert result.messages[0].content == "Hello, I need help with my order"
