@@ -1,4 +1,4 @@
-# Chat Simulator
+# Conversation Simulator
 
 A tool for simulating Customer-Agent conversations based on real chat data.
 
@@ -6,8 +6,8 @@ A tool for simulating Customer-Agent conversations based on real chat data.
 
 1. Clone this repository
    ```bash
-   git clone git@github.com:SparkBeyond/chat_simulator.git
-   cd chat_simulator
+   git clone git@github.com:SparkBeyond/conversation-simulator.git
+   cd conversation-simulator
    ```
 
 2. Set up the development environment (see [Development Guide](./docs/development/dev_guide.md))

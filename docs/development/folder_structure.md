@@ -1,6 +1,6 @@
-# Chat Simulator - Folder Structure
+# Conversation Simulator - Folder Structure
 
-This document outlines the high-level folder structure for the Chat Simulator project.
+This document outlines the high-level folder structure for the Conversation Simulator project.
 
 ## Overview
 
@@ -11,7 +11,6 @@ This document outlines the high-level folder structure for the Chat Simulator pr
 ├── pyproject.toml
 ├── docs/
 │   ├── development/
-│   └── usage/
 ├── chat_simulator/
 └── tests/
 ```

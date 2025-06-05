@@ -1,8 +1,8 @@
-# Chat Simulator Design
+# Conversation Simulator Design
 
 ## Overview
 
-The chat simulator supports two primary flows:
+The conversation simulator supports two primary flows:
 1. **Full Simulation**: Both customer and agent are simulated
 2. **Hybrid Simulation**: Simulated customer with a real agent
 

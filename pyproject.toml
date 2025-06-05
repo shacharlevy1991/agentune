@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "chat_simulator"
+name = "conversation_simulator"
 version = "0.1.0"
 description = "A tool for simulating Customer-Agent conversations based on real chat data"
 authors = ["SparkBeyond <info@sparkbeyond.com>"]
 readme = "README.md"
 packages = [{include = "chat_simulator"}]
 license = "MIT"
-repository = "https://github.com/SparkBeyond/chat_simulator"
-documentation = "https://github.com/SparkBeyond/chat_simulator"
+repository = "https://github.com/SparkBeyond/conversation-simulator"
+documentation = "https://github.com/SparkBeyond/conversation-simulator"
 
 
 [tool.poetry.dependencies]
