@@ -71,16 +71,16 @@ class Person:
 ### Running Ruff
 ```bash
 # Check your code with ruff
-poetry run ruff check chat_simulator/
+poetry run ruff check conversation_simulator/
 
 # Fix issues automatically when possible
-poetry run ruff check --fix chat_simulator/
+poetry run ruff check --fix conversation_simulator/
 ```
 
 ### Running Mypy
 ```bash
 # Run mypy for type checking
-poetry run mypy chat_simulator/
+poetry run mypy conversation_simulator/
 ```
 
 ### Pre-commit Hooks

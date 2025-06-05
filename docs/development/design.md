@@ -38,7 +38,7 @@ class MessageDraft:
     sender: ParticipantRole  # AGENT or CUSTOMER
 
 @attrs.frozen
-class Message:
+class Message: 
     content: str
     timestamp: datetime
     sender: ParticipantRole  # AGENT or CUSTOMER
@@ -146,8 +146,8 @@ Result object returned by conversation runners.
 
 ```python
 @attrs.frozen
-class SimulationResult:
-    """Result of running a conversation simulation."""
+class ConversationResult:
+    """Result of simulating a single conversation."""
     conversation: Conversation
     duration_seconds: float = 0.0
 ```
@@ -196,12 +196,12 @@ class FullSimulationRunner:
         )
         self._conversation = Conversation(messages=(initial_msg,))
     
-    async def run(self) -> SimulationResult:
+    async def run(self) -> ConversationResult:
         """
         Execute the full simulation conversation.
         
         Returns:
-            SimulationResult with conversation history and metadata
+            ConversationResult with conversation history and metadata
         """
         # Implementation details...
     

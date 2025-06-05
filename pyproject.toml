@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A tool for simulating Customer-Agent conversations based on real chat data"
 authors = ["SparkBeyond <info@sparkbeyond.com>"]
 readme = "README.md"
-packages = [{include = "chat_simulator"}]
+packages = [{include = "conversation_simulator"}]
 license = "MIT"
 repository = "https://github.com/SparkBeyond/conversation-simulator"
 documentation = "https://github.com/SparkBeyond/conversation-simulator"

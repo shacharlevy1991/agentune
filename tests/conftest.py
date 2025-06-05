@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from chat_simulator.models import Conversation, Message, MessageRole
+from conversation_simulator.models import Conversation, Message, ParticipantRole
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -46,16 +46,19 @@ def sample_chats_data(sample_chats_path: Path) -> List[Dict[str, Any]]:
 @pytest.fixture
 def sample_conversation() -> Conversation:
     """Return a sample conversation for testing."""
+    from datetime import datetime
+    
     return Conversation(
-        id="test_conv_1",
         messages=(
             Message(
                 content="Hello, I need help with my order",
-                role=MessageRole.CUSTOMER
+                sender=ParticipantRole.CUSTOMER,
+                timestamp=datetime(2024, 1, 1, 10, 0, 0)
             ),
             Message(
                 content="I'd be happy to help. What's your order number?",
-                role=MessageRole.AGENT
+                sender=ParticipantRole.AGENT,
+                timestamp=datetime(2024, 1, 1, 10, 0, 30)
             )
         )
     )

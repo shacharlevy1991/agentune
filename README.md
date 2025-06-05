@@ -14,7 +14,7 @@ A tool for simulating Customer-Agent conversations based on real chat data.
 
 ## Project Structure
 
-- `chat_simulator/` - Package source code
+- `conversation_simulator/` - Package source code
 - `tests/` - Test files
 - `docs/` - Project documentation
 
