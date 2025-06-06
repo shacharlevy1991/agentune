@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from ..base import BaseParticipant
+from ..base import Participant
 from ...models.roles import ParticipantRole
 
 
-class BaseCustomer(BaseParticipant):
+class Customer(Participant):
     """Base class for customer participants.
     
     Provides common functionality and interface for customer implementations.

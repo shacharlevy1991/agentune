@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from .base import BaseParticipant
-from .agent import BaseAgent, ZeroShotAgent
-from .customer import BaseCustomer, ZeroShotCustomer
+from .base import Participant
+from .agent import Agent, ZeroShotAgent
+from .customer import Customer, ZeroShotCustomer
 
 __all__ = [
-    "BaseParticipant",
-    "BaseAgent",
-    "BaseCustomer", 
+    "Participant",
+    "Agent",
+    "Customer", 
     "ZeroShotAgent",
     "ZeroShotCustomer",
 ]

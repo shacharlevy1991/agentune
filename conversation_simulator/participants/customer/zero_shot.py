@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from .base import BaseCustomer
+from .base import Customer
 from ...models.conversation import Conversation
 from ...models.message import Message
 
 
-class ZeroShotCustomer(BaseCustomer):
+class ZeroShotCustomer(Customer):
     """Zero-shot LLM-based customer participant.
     
     Uses a language model to generate customer responses without

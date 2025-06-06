@@ -103,7 +103,7 @@ class Outcome:
     description: str  # human-readable description
     
 @attrs.frozen  
-class OutcomeSchema:
+class Outcomes:
     """Defines legal outcome labels for a simulation run."""
     outcomes: tuple[Outcome, ...]  # list of valid outcomes
     
@@ -123,7 +123,7 @@ class OutcomeSchema:
         return self._outcome_dict.get(name)
     
     # Example:
-    # OutcomeSchema(outcomes=(
+    # Outcomes(outcomes=(
     #     Outcome(name="resolved", description="Customer issue was fully resolved"),
     #     Outcome(name="escalated", description="Issue was escalated to supervisor"),
     #     Outcome(name="sale_completed", description="Customer completed a purchase")
@@ -161,7 +161,7 @@ Orchestrated by `FullSimulationRunner` - handles conversations between two simul
 
 ```python
 @attrs.define
-class FullSimulationRunner:
+class FullSimulationRunner(Runner):
     """Runs conversations with both simulated customer and agent.
     
     Single-use runner that manages conversation state internally.
@@ -171,8 +171,8 @@ class FullSimulationRunner:
     customer: Participant
     agent: Participant
     initial_message: MessageDraft
-    intent: Intent | None = None
-    outcome_schema: OutcomeSchema | None = None
+    intent: Intent
+    outcomes: Outcomes
     max_messages: int = 100
     base_timestamp: datetime | None = None  # If None, use current time when run() starts
     progress_callback: Callable[[Conversation, dict[str, Any]], None] | None = None
@@ -238,7 +238,7 @@ class FullSimulationRunner:
 **Usage Example:**
 ```python
 # Define outcome schema
-outcome_schema = OutcomeSchema(outcomes=(
+outcomes = Outcomes(outcomes=(
     Outcome(name="resolved", description="Customer issue was fully resolved"),
     Outcome(name="escalated", description="Issue was escalated to supervisor"),
     Outcome(name="abandoned", description="Customer left without resolution")
@@ -254,7 +254,7 @@ runner = FullSimulationRunner(
     agent=agent, 
     initial_message=MessageDraft(content="Hello, I need help", sender=ParticipantRole.CUSTOMER),
     intent=support_intent,
-    outcome_schema=outcome_schema,
+    outcomes=outcomes,
     max_messages=50
 )
 result = await runner.run()
@@ -274,6 +274,8 @@ runner_with_progress = FullSimulationRunner(
     customer=customer,
     agent=agent,
     initial_message=MessageDraft(content="Hello, I need help", sender=ParticipantRole.CUSTOMER),
+    intent=support_intent,
+    outcomes=outcomes,
     progress_callback=progress_handler
 )
 ```

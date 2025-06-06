@@ -7,7 +7,7 @@ import abc
 from ..models.simulation import ConversationResult
 
 
-class BaseRunner(abc.ABC):
+class Runner(abc.ABC):
     """Base interface for conversation simulation runners.
     
     This abstract base class defines the interface that all conversation

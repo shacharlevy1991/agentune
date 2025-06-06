@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from .base import BaseCustomer
+from .base import Customer
 from .zero_shot import ZeroShotCustomer
 
 __all__ = [
-    "BaseCustomer",
+    "Customer",
     "ZeroShotCustomer",
 ]

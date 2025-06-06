@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from ..base import BaseParticipant
+from ..base import Participant
 from ...models.roles import ParticipantRole
 
 
-class BaseAgent(BaseParticipant):
+class Agent(Participant):
     """Base class for agent participants.
     
     Provides common functionality and interface for agent implementations.

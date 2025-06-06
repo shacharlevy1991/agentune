@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from .base import BaseAgent
+from .base import Agent
 from ...models.conversation import Conversation
 from ...models.message import Message
 
 
-class ZeroShotAgent(BaseAgent):
+class ZeroShotAgent(Agent):
     """Zero-shot LLM-based agent participant.
     
     Uses a language model to generate agent responses without

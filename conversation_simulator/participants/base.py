@@ -8,7 +8,7 @@ from ..models.conversation import Conversation
 from ..models.message import Message
 
 
-class BaseParticipant(abc.ABC):
+class Participant(abc.ABC):
     """Base interface for all simulated conversation participants.
     
     This abstract base class defines the interface that all conversation

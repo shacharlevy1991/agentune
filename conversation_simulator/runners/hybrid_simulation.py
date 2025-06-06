@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from .base import BaseRunner
+from .base import Runner
 from ..models.simulation import ConversationResult
 
 
-class HybridSimulationRunner(BaseRunner):
+class HybridSimulationRunner(Runner):
     """Runs conversations between simulated customer and real agent.
     
     Handles real-time message synchronization and coordination between

@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from .base import BaseAgent
+from .base import Agent
 from .zero_shot import ZeroShotAgent
 
 __all__ = [
-    "BaseAgent",
+    "Agent",
     "ZeroShotAgent",
 ]

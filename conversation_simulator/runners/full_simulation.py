@@ -6,28 +6,28 @@ import attrs
 from datetime import datetime
 from typing import Any, Callable
 
-from .base import BaseRunner
+from .base import Runner
 from ..models.conversation import Conversation
 from ..models.intent import Intent
 from ..models.message import MessageDraft
 from ..models.outcome import Outcomes
 from ..models.simulation import ConversationResult
-from ..participants.base import BaseParticipant
+from ..participants.base import Participant
 
 
 @attrs.define
-class FullSimulationRunner(BaseRunner):
+class FullSimulationRunner(Runner):
     """Runs conversations with both simulated customer and agent.
     
     Single-use runner that manages conversation state internally.
     Provides progress tracking capabilities for conversations.
     """
     
-    customer: BaseParticipant
-    agent: BaseParticipant
+    customer: Participant
+    agent: Participant
     initial_message: MessageDraft
     intent: Intent
-    outcome_schema: Outcomes
+    outcomes: Outcomes
     max_messages: int = 100
     base_timestamp: datetime | None = None  # If None, use current time when run() starts
     progress_callback: Callable[[Conversation, dict[str, Any]], None] | None = None # todo: should be a class?

@@ -9,8 +9,8 @@ from .models.intent import Intent
 from .models.message import Message, MessageDraft
 from .models.outcome import Outcome, Outcomes
 from .models.simulation import ConversationResult
-from .participants.base import BaseParticipant
-from .runners.base import BaseRunner
+from .participants.base import Participant
+from .runners.base import Runner
 from .runners.full_simulation import FullSimulationRunner
 
 __version__ = "0.1.0"
@@ -26,8 +26,8 @@ __all__ = [
     "ConversationResult",
     "ParticipantRole",
     # Base classes
-    "BaseParticipant",
-    "BaseRunner",
+    "Participant",
+    "Runner",
     # Runners
     "FullSimulationRunner",
 ]
