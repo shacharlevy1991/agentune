@@ -230,7 +230,8 @@ class FullSimulationRunner(Runner):
 ```
 
 **Key characteristics:**
-- Simple alternating message exchange
+- Timestamp-based concurrent message generation - both participants generate messages simultaneously
+- Runner selects message with earlier timestamp and discards the other (realistic conflict resolution)
 - Deterministic message ordering based on simulated timestamps
 - No real-time constraints - can run at maximum speed
 - Both participants are AI-driven
