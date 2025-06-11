@@ -1,7 +1,6 @@
 """Tests for FullSimulationRunner."""
 
 from __future__ import annotations
-
 from datetime import datetime, timedelta
 import attrs
 
@@ -42,6 +41,9 @@ class MockParticipant(Participant):
         """
         self.role = role
         self.messages = messages
+
+    def with_intent(self, intent_description: str) -> MockParticipant:
+        return self # Intent is not used in this mock, so we ignore it
 
     def _to_message(self, message: MessageWithTimestamp) -> Message:
         return Message(

@@ -1,7 +1,5 @@
 """Base participant interface for conversation simulation."""
 
-from __future__ import annotations
-
 import abc
 
 from ..models.conversation import Conversation
@@ -24,5 +22,17 @@ class Participant(abc.ABC):
             
         Returns:
             Message with timestamp, or None if participant is finished
+        """
+        ...
+    
+    @abc.abstractmethod
+    def with_intent(self, intent_description: str) -> 'Participant':
+        """Return a new participant instance with the specified intent.
+        
+        Args:
+            intent_description: Natural language description of the participant's goal/intent
+            
+        Returns:
+            New participant instance with the intent installed
         """
         ...
