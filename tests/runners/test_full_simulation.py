@@ -15,7 +15,6 @@ from conversation_simulator.outcome_detection.base import OutcomeDetector
 from conversation_simulator.participants.base import Participant
 from conversation_simulator.runners.full_simulation import FullSimulationRunner, ProgressHandler
 
-
 @attrs.frozen
 class MessageWithTimestamp:
     """Message with an associated timestamp."""
