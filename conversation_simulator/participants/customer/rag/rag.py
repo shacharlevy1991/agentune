@@ -8,9 +8,8 @@ from datetime import datetime, timedelta
 from typing import List, Sequence
 
 from langchain_core.documents import Document
-from langchain_core.messages import BaseMessage, AIMessage, SystemMessage
+from langchain_core.messages import BaseMessage, AIMessage
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import Runnable
 from langchain_core.language_models import BaseChatModel
 from langchain_core.vectorstores import VectorStore
@@ -18,18 +17,9 @@ from langchain_core.vectorstores import VectorStore
 from ....models import Conversation, Message, ParticipantRole
 from ....rag import get_few_shot_examples
 from ..base import Customer, CustomerFactory
+from .prompt import CUSTOMER_PROMPT
 
 logger = logging.getLogger(__name__)
-
-
-CUSTOMER_SYSTEM_PROMPT = """You are a customer interacting with a customer service agent.
-- Your goal is to resolve your issue.
-- Behave like a real person. You can be frustrated, confused, or happy depending on the agent's responses.
-- Use the provided few-shot examples to understand the tone and style of a typical customer in this situation.
-- Use the conversation history to stay in context.
-- Keep your responses concise and to the point.
-"""
-
 
 class RagCustomer(Customer):
     """RAG LLM-based customer participant."""
@@ -46,20 +36,11 @@ class RagCustomer(Customer):
 
     def _create_llm_chain(self, model: BaseChatModel) -> Runnable:
         """Creates the LangChain Expression Language (LCEL) chain for the customer."""
-        base_system_prompt = CUSTOMER_SYSTEM_PROMPT
-
-        if self.intent_description:
-            system_prompt_content = f"Your goal: {self.intent_description}\n\n{base_system_prompt}"
-        else:
-            system_prompt_content = base_system_prompt
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                SystemMessage(content=system_prompt_content),
-                MessagesPlaceholder(variable_name="few_shot_examples"),
-                MessagesPlaceholder(variable_name="chat_history"),
-            ]
-        )
+        # Use the imported CUSTOMER_PROMPT from prompt.py
+        # The customer goal will be passed in the invoke parameters
+        prompt = CUSTOMER_PROMPT
+        
+        # Prepare the chain with the imported prompt
         return prompt | model | StrOutputParser()
 
     def with_intent(self, intent_description: str) -> RagCustomer:
@@ -89,12 +70,19 @@ class RagCustomer(Customer):
 
         # 3. Generation
         chain = self._create_llm_chain(model=self.model)
-        response_content = await chain.ainvoke(
-            {
-                "few_shot_examples": formatted_examples,
-                "chat_history": chat_history_langchain,
-            }
-        )
+
+        
+        # Add the goal line to the conversation if there's an intent
+        goal_line = f"- Your goal in this conversation is: {self.intent_description}" if self.intent_description else ""
+        
+        # Prepare the input for the chain
+        chain_input = {
+            "examples": "\n\n".join([str(msg.content) for msg in formatted_examples]),
+            "current_conversation": "\n".join([str(msg.content) for msg in chat_history_langchain]),
+            "goal_line": goal_line
+        }
+            
+        response_content = await chain.ainvoke(chain_input)
 
         if not response_content.strip():
             return None
@@ -137,7 +125,7 @@ class RagCustomer(Customer):
                 
                 customer_message = Message(
                     sender=ParticipantRole(metadata["role"]),
-                    content=str(metadata["content"]),
+                    content='Customer response: ' + str(metadata["content"]),
                     timestamp=datetime.fromisoformat(str(metadata["timestamp"])),
                 )
 
@@ -152,7 +140,10 @@ class RagCustomer(Customer):
                     logger.warning("Skipping few-shot example with empty content for HumanMessage in RagCustomer.")
                     continue
 
-                formatted_messages.append(customer_message.to_langchain())  # This will be HumanMessage
+                customer_message_langchain = customer_message.to_langchain()
+                customer_message_langchain.content = 'Customer response: ' + str(customer_message.content)
+                formatted_messages.append(customer_message_langchain)
+
             except (KeyError, ValueError, TypeError) as e:
                 logger.warning(f"Error processing document for few-shot example in RagCustomer: {doc}. Error: {e}. Skipping.")
                 continue
