@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import override
 
 import pytest
 from cattrs.preconf.orjson import make_converter
@@ -21,8 +22,8 @@ from langchain_openai import ChatOpenAI
 
 from conversation_simulator import SimulationSession
 from conversation_simulator.intent_extraction.dummy import DummyIntentExtractor
-from conversation_simulator.models import Conversation, Intent, Message, Outcome, Outcomes
-from conversation_simulator.outcome_detection.base import OutcomeDetector
+from conversation_simulator.models import Conversation, Message, Outcome, Outcomes
+from conversation_simulator.outcome_detection.base import OutcomeDetectionTest, OutcomeDetector
 from conversation_simulator.participants.agent.config import AgentConfig
 from conversation_simulator.participants.agent.zero_shot import ZeroShotAgentFactory
 from conversation_simulator.participants.customer.zero_shot import ZeroShotCustomerFactory
@@ -36,11 +37,17 @@ converter = make_converter()
 class SimpleOutcomeDetector(OutcomeDetector):
     """Mock outcome detector for testing."""
 
-    async def detect_outcome(self, conversation: Conversation, intent: Intent, possible_outcomes: Outcomes) -> Outcome | None:
+    @override
+    async def detect_outcomes(
+        self,
+        instances: tuple[OutcomeDetectionTest, ...],
+        possible_outcomes: Outcomes,
+        return_exceptions: bool = True
+    ) -> tuple[Outcome | None | Exception, ...]:
         """Mock outcome detection - return first available outcome."""
         if possible_outcomes.outcomes:
-            return possible_outcomes.outcomes[0]
-        return None
+            return tuple(possible_outcomes.outcomes[0] for _ in instances)
+        return tuple(None for _ in instances)
 
 @pytest.mark.integration
 class TestFullPipelineIntegration:

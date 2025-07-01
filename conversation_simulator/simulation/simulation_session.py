@@ -38,6 +38,8 @@ class SimulationSession:
         session_name: str = "Simulation Session",
         session_description: str = "Automated conversation simulation",
         max_messages: int = 100,
+        max_concurrent_conversations: int = 10,
+        return_exceptions: bool = True
     ) -> None:
         """Initialize the simulation session.
         
@@ -51,6 +53,15 @@ class SimulationSession:
             session_name: Human-readable name for this session
             session_description: Description of this simulation session
             max_messages: Maximum number of messages per conversation in simulation
+            max_concurrent_conversations: Maximum number of conversations to run concurrently.
+                                          Conversations will be processed in the order of the input list;
+                                          however, we will simulate all conversations (with that many concurrent tasks)
+                                          before analyzing all results (with, again, that many concurrent tasks).
+            return_exceptions: If True, per-conversation exceptions will be logged and reported to the progress callback; 
+                               the returned result will not include those conversations (not even in the 
+                               total conversation count).
+                               If False, any exception will be raised from this method and no information 
+                               will be returned about other conversations.                              
         """
         self.outcomes = outcomes
         self.agent_factory = agent_factory
@@ -61,18 +72,17 @@ class SimulationSession:
         self.session_name = session_name
         self.session_description = session_description
         self.max_messages = max_messages
+        self.max_concurrent_conversations = max_concurrent_conversations
+        self.return_exceptions = return_exceptions
     
     async def run_simulation(
         self,
-        real_conversations: list[Conversation],
-        max_concurrent_conversations: int = 10
+        real_conversations: list[Conversation]
     ) -> SimulationSessionResult:
         """Execute the full simulation flow.
         
         Args:
             real_conversations: Original conversations to base simulations on
-            max_concurrent_conversations: Maximum number of conversations to run concurrently.
-                                          Conversations will be processed in the order of the input list.
          
         Returns:
             Complete simulation results with analysis
@@ -89,8 +99,9 @@ class SimulationSession:
         scenarios = await self._generate_scenarios(original_conversations)
         
         # Step 2: Run simulations for each scenario
-        simulated_conversations = await self._run_simulations(scenarios, max_concurrent_conversations)
-         
+        simulated_conversations_with_exceptions = await self._run_simulations(scenarios, self.max_concurrent_conversations)
+        simulated_conversations = tuple(conv for conv in simulated_conversations_with_exceptions if isinstance(conv, SimulatedConversation))
+        
         # Step 3: Analyze results
         session_end = datetime.now()
         
@@ -102,6 +113,7 @@ class SimulationSession:
             outcome_detector=self.outcome_detector,
             scenarios=scenarios,
             outcomes=self.outcomes,
+            return_exceptions=self.return_exceptions,
         )
         
         return SimulationSessionResult(
@@ -117,7 +129,7 @@ class SimulationSession:
     
     async def _generate_scenarios(
         self,
-        original_conversations: tuple[OriginalConversation, ...],
+        original_conversations: tuple[OriginalConversation, ...]
     ) -> tuple[Scenario, ...]:
         """Generate simulation scenarios from original conversations.
         
@@ -133,7 +145,10 @@ class SimulationSession:
         """
         scenarios = []
 
-        for original_conv in original_conversations:
+        intents = await self.intent_extractor.extract_intents(tuple(conv.conversation for conv in original_conversations),
+                                                              return_exceptions=self.return_exceptions)
+
+        for original_conv, intent in zip(original_conversations, intents):
             # Skip empty conversations
             if not original_conv.conversation.messages:
                 continue
@@ -144,10 +159,7 @@ class SimulationSession:
                 content=original_conv.conversation.messages[0].content,
             )
 
-            # Extract intent from conversation
-            intent = await self.intent_extractor.extract_intent(original_conv.conversation)
-            
-            if intent is None:
+            if intent is None or isinstance(intent, Exception):
                 continue  # Skip conversations where intent couldn't be extracted
             # Create scenario with simple unique ID
             scenario_id = f"scenario_{len(scenarios)}"
@@ -166,7 +178,7 @@ class SimulationSession:
         self,
         scenarios: tuple[Scenario, ...],
         max_concurrent_conversations: int
-    ) -> tuple[SimulatedConversation, ...]:
+    ) -> tuple[SimulatedConversation | Exception, ...]:
         """Run conversation simulations for all scenarios.
         
         Each simulated conversation gets a unique ID and maintains a mapping
@@ -202,11 +214,12 @@ class SimulationSession:
         results = await asyncutil.bounded_parallelism(
             [runner.run for runner in runners], 
             max_concurrent_conversations,
-            return_exceptions=False
+            return_exceptions=self.return_exceptions
         )
         
         # Wrap results with SimulatedConversation
         simulated_conversations = tuple(
+            result if isinstance(result, Exception) else
             SimulatedConversation(
                 id=f"simulated_{i}",
                 scenario_id=scenario.id,

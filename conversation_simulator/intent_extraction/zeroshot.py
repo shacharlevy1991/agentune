@@ -4,7 +4,7 @@ import logging
 from langchain_core.language_models import BaseChatModel
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, override
 
 from ..models.conversation import Conversation
 from ..models.intent import Intent
@@ -53,7 +53,7 @@ class ZeroshotIntentExtractor(IntentExtractor):
     the primary intent of the conversation initiator (customer or agent).
     """
     
-    def __init__(self, llm: BaseChatModel):
+    def __init__(self, llm: BaseChatModel, max_concurrency: int = 50):
         """Initialize the zero-shot intent extractor.
         
         Args:
@@ -61,6 +61,7 @@ class ZeroshotIntentExtractor(IntentExtractor):
         """
         self.llm = llm
         self.parser = PydanticOutputParser(pydantic_object=IntentExtractionResult)
+        self.max_concurrency = max_concurrency
         
         # Create the prompt template with format instructions
         prompt_template = create_intent_extraction_prompt(
@@ -69,28 +70,21 @@ class ZeroshotIntentExtractor(IntentExtractor):
         
         # Create the processing chain
         self._chain = prompt_template | self.llm | self.parser
-    
-    async def extract_intent(self, conversation: Conversation) -> Intent | None:
-        """Extract intent from a conversation using a zero-shot approach.
+
+    def _chain_input(self, conversation: Conversation) -> dict[str, str]:
+        return {"conversation": format_conversation(conversation) }
+
+    @override
+    async def extract_intents(self, conversations: tuple[Conversation, ...],
+                              return_exceptions: bool = True) -> tuple[Intent | None | Exception, ...]:
+        # If conversation is empty, no outcome can be detected and we return None for that index
+        valid_indices = [i for i, conversation in enumerate(conversations) if conversation.messages]
+        if not valid_indices:
+            return tuple(None for _ in conversations)
+
+        indexed_inputs = [(i, self._chain_input(conversations[i])) for i in valid_indices]
+        results = await self._chain.abatch([input for _, input in indexed_inputs], return_exceptions=return_exceptions,
+                                           max_concurrency=self.max_concurrency)
+        detected_outcome_by_index = {i: result.to_intent() for (i, _), result in zip(indexed_inputs, results) }
         
-        Args:
-            conversation: The conversation to analyze
-            
-        Returns:
-            Extracted intent with reasoning and confidence, or None if extraction fails
-        """
-        if not conversation.messages:
-            return None
-            
-        try:
-            # Format the conversation and process it through the chain
-            formatted_conversation = format_conversation(conversation)
-            result: IntentExtractionResult = await self._chain.ainvoke({"conversation": formatted_conversation})
-            
-            return result.to_intent()
-            
-        except Exception as e:
-            # Log the error and return None
-            # In a production environment, you might want to log this to a proper logging system
-            logger.error(f"Failed to extract intent: {e}")
-            return None
+        return tuple(detected_outcome_by_index.get(i, None) for i in range(len(conversations)))

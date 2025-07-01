@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from datetime import datetime, timedelta
+from typing import override
 import attrs
 
 import pytest
@@ -11,7 +12,7 @@ from conversation_simulator.models.intent import Intent
 from conversation_simulator.models.message import Message, MessageDraft
 from conversation_simulator.models.outcome import Outcome, Outcomes
 from conversation_simulator.models.roles import ParticipantRole
-from conversation_simulator.outcome_detection.base import OutcomeDetector
+from conversation_simulator.outcome_detection.base import OutcomeDetectionTest, OutcomeDetector
 from conversation_simulator.participants.base import Participant
 from conversation_simulator.runners.full_simulation import FullSimulationRunner, ProgressHandler
 
@@ -81,16 +82,18 @@ class MockOutcomeDetector(OutcomeDetector):
         self.detect_after_messages = detect_after_messages
         self.outcome = outcome
 
-    async def detect_outcome(
-        self, 
-        conversation: Conversation, 
-        intent: Intent, 
-        possible_outcomes: Outcomes
-    ) -> Outcome | None:
+    @override
+    async def detect_outcomes(
+        self,
+        instances: tuple[OutcomeDetectionTest, ...],
+        possible_outcomes: Outcomes,
+        return_exceptions: bool = True
+    ) -> tuple[Outcome | None | Exception, ...]:
         """Return outcome if conditions are met."""
-        if len(conversation.messages) >= self.detect_after_messages:
-            return self.outcome
-        return None
+        return tuple(
+            self.outcome if len(instance.conversation.messages) >= self.detect_after_messages else None
+            for instance in instances
+        )
 
 
 class MockProgressHandler(ProgressHandler):
