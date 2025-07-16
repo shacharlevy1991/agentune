@@ -22,7 +22,7 @@ def _get_metadata(metadata_or_doc: dict | Document) -> dict:
     may require different metadata formats.
     """
     if isinstance(metadata_or_doc, Document):
-        metadata: dict =  metadata_or_doc.metadata
+        metadata: dict = metadata_or_doc.metadata
         return metadata
     elif isinstance(metadata_or_doc, dict):
         return metadata_or_doc
@@ -32,6 +32,10 @@ def _get_metadata(metadata_or_doc: dict | Document) -> dict:
 def conversations_to_langchain_documents(
     conversations: list[Conversation]
 ) -> list[Document]:
+    """
+    Converts a list of conversations into a list of LangChain documents,
+    where the content is the conversation history and the metadata is the current message index.
+    """
     documents: list[Document] = []
     # Filter out empty conversations
     conversations = [conversation for conversation in conversations if len(conversation.messages) > 0]
@@ -153,3 +157,98 @@ async def get_similar_examples_for_next_message_role(
     
     return valid_docs
 
+
+async def get_few_shot_examples(
+    conversation_history: Sequence[Message],
+    vector_store: VectorStore,
+    k: int
+) -> list[tuple[Document, float]]:
+    """Retrieves k relevant documents for a given role of the current last message."""
+    if not conversation_history:
+        return []
+
+    current_message_role = conversation_history[-1].sender
+    query = _format_conversation_history(conversation_history)
+
+    def role_filter_function(document: Document) -> bool:
+        """
+        This function acts as the filter. It checks if a document's role
+        matches the role of the current speaker.
+        """
+        # It uses your _get_metadata helper
+        metadata = _get_metadata(document)
+        # It has access to 'current_message_role' from the outer scope
+        return metadata.get("current_message_role") == current_message_role.value
+
+    retrieved_docs: list[tuple[Document, float]] = await vector_store.asimilarity_search_with_score(
+        query=query, k=k,
+        filter=role_filter_function
+    )
+
+    # Sort retrieved docs by score
+    retrieved_docs.sort(key=lambda x: x[1], reverse=True)
+
+    # Deduplicate documents coming from the same conversation, by comparing the full_conversation metadata
+    unique_docs = []
+    seen_conversations = set()
+    for doc, score in retrieved_docs:
+        if doc.metadata.get("full_conversation") not in seen_conversations:
+            unique_docs.append((doc, score))
+            seen_conversations.add(doc.metadata.get("full_conversation"))
+
+    logger.debug(f"Retrieved {len(retrieved_docs)} documents, deduplicated to {len(unique_docs)}.")
+
+    return unique_docs
+
+
+def format_examples(
+        examples: list[tuple[Document, float]],
+) -> str:
+    """
+    Formats the retrieved few-shot example Documents into a list of LangChain messages.
+    Each Document's page_content (history, typically customer's turn) becomes a HumanMessage,
+    and the metadata (next agent message) becomes an embedded agent response in the conversation history.
+    """
+    conversations: list[Document] = [doc[0] for doc in examples]
+    formatted_messages: list[str] = []
+
+    def format_single_conversation(ind, doc) -> str:
+        """Formats a single conversation Document into a LangChain message."""
+        try:
+            # Extract metadata from the document
+            metadata = doc.metadata
+            # Validate essential keys before creating Message object
+            if "full_conversation" not in metadata:
+                logger.warning(f"Skipping example due to missing 'full_conversation' metadata: {metadata}")
+                return ""
+
+            full_conversation = str(metadata["full_conversation"])
+            formatted_conv = full_conversation  # Default to the original conversation
+
+            # 2. Conditional Logic: Only try to highlight the response if 'next_message_content' exists.
+            if "next_message_content" in metadata:
+                participant_response = str(metadata["next_message_content"])
+                role_name = metadata["next_message_role"].capitalize()
+                participant_turn_str = f"{role_name}: {participant_response}"
+
+                if participant_turn_str in full_conversation:
+                    # If the key exists, perform the replacement as before
+                    formatted_conv = full_conversation.replace(
+                        participant_turn_str, f"**Next {role_name} response**: {participant_response}",
+                        1  # Only replace the first occurrence
+                    )
+                else:
+                    logger.warning(
+                        f"Could not find {role_name} turn '{participant_response}' in full conversation."
+                    )
+
+            # Add indexing for the examples
+            return f"Example {ind + 1}:\n\n{formatted_conv}"
+        except Exception as e:
+            logger.error(f"Error formatting conversation example {ind + 1}: {e}")
+            return ""
+
+    for index, document in enumerate(conversations):
+        formatted_messages.append(format_single_conversation(index, document))
+
+    return "\n\n".join(formatted_messages)

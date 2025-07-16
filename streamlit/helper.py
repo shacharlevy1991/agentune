@@ -20,7 +20,12 @@ from conversation_simulator.util.structure import converter
 
 
 def get_llm_callbacks() -> list:
-    """Get a list of callback handlers for LLM operations."""
+    """
+    Configure and return callback handlers for LLM logging and tracking.
+
+    Returns:
+        list: List containing LangChain logging callback and Opik tracer
+    """
     return []
 
 
@@ -480,6 +485,7 @@ def get_openai_models() -> dict[str, list[str]]:
             "gpt-4.5-preview-2025-02-27",
             "gpt-4o-2024-08-06",
             "gpt-4o-mini-2024-07-18",
+            "gpt-4o-2024-11-20",
         ],
         "Reasoning Models": [
             "o1-2024-12-17",

@@ -49,7 +49,7 @@ def load_sample_conversations() -> list[Conversation]:
     """
     # Path to the sample data file
     data_file = Path(__file__).parent.parent / "tests" / "data" / "dch2_sampled_dataset.json"
-    
+
     logger.info(f"Loading sample conversations from {data_file}")
     
     if not data_file.exists():
@@ -91,9 +91,6 @@ def extract_outcomes_from_conversations(conversations: list[Conversation]) -> Ou
     return Outcomes(outcomes=outcomes_tuple)
 
 
-
-
-
 async def run_rag_simulation(
     embeddings_model_name: str,
     chat_model_name: str,
@@ -116,7 +113,7 @@ async def run_rag_simulation(
         SimulationSessionResult containing the simulation outcomes
     """
     logger.info(f"Starting RAG simulation with model: {chat_model_name}")
-    
+
     # Initialize OpenAI components
     chat_model = ChatOpenAI(model=chat_model_name, temperature=0.0)
     embeddings_model = OpenAIEmbeddings(model=embeddings_model_name)

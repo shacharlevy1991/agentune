@@ -162,8 +162,10 @@ def initialize_sidebar():
         if "Embedding" not in category:
             chat_models.extend(model_list)
 
-    default_model_candidates = [model_name for model_name in chat_models if model_name.startswith("gpt-4o-mini")]
-    default_model: str = default_model_candidates[0] if default_model_candidates else chat_models[0]
+    default_model: str = "gpt-4o-2024-08-06"
+
+    if default_model not in chat_models:
+        raise Exception(f"Default model '{default_model}' is not on the list of available chat models.")
     
     # Default adversarial model (reasoning model)
     reasoning_models = models.get("Reasoning Models", [])
@@ -330,7 +332,7 @@ async def run_simulation(
     """Run the conversation simulation."""
     
     # Get logging callback tracer
-    callbacks = get_llm_callbacks()
+    callbacks = get_llm_callbacks(config['session_name'])
     
     # Initialize models with logging callbacks
     agent_model = ChatOpenAI(**config['agent_model_kwargs'], callbacks=callbacks)
