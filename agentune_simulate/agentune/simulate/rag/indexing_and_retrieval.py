@@ -6,6 +6,7 @@ from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
 from ..models import Conversation, Message
 from ..util.structure import converter
+from .filtered_retriever import VectorStoreSearcher
 
 logger = logging.getLogger(__name__)
 
@@ -76,20 +77,6 @@ def format_highlighted_example(doc: Document) -> str:
     return format_conversation_with_highlight(messages, current_index)
 
 
-def _get_metadata(metadata_or_doc: dict | Document) -> dict:
-    """Safely retrieve metadata if needed.
-
-    A workaround for the fact that filter functions in different LangChain vector stores
-    may require different metadata formats.
-    """
-    if isinstance(metadata_or_doc, Document):
-        metadata: dict = metadata_or_doc.metadata
-        return metadata
-    elif isinstance(metadata_or_doc, dict):
-        return metadata_or_doc
-    raise TypeError("metadata_or_doc must be either a Document or dict")
-
-
 def conversations_to_langchain_documents(
     conversations: list[Conversation]
 ) -> list[Document]:
@@ -154,15 +141,12 @@ async def get_similar_finished_conversations(
     """
     query = format_conversation(conversation.messages)
 
-    def filter_by_finished_conversation(metadata_or_doc: dict | Document) -> bool:
-        """Filter function to check if the conversation is finished."""
-        return _get_metadata(metadata_or_doc).get("has_next_message", False) is False
-
-    # Retrieve similar conversations, filtering for finished conversations only
-    retrieved_docs: list[tuple[Document, float]] = await vector_store.asimilarity_search_with_score(
+    # Use the new searcher for consistent filtering across vector stores
+    searcher = VectorStoreSearcher.create(vector_store)
+    retrieved_docs = await searcher.similarity_search_with_filter(
         query=query,
         k=k,
-        filter=filter_by_finished_conversation
+        filter_dict={"has_next_message": False}
     )
 
     # Sort by similarity score (highest first)
@@ -177,23 +161,18 @@ async def get_few_shot_examples(
     k: int
 ) -> list[tuple[Document, float]]:
     """Retrieves k relevant documents for a given role of the current last message."""
+    if not conversation_history:
+        return []
 
     current_message_role = conversation_history[-1].sender
     query = format_conversation(conversation_history)
 
-    def role_filter_function(doc):
-        """
-        This function acts as the filter. It checks if a document's role
-        matches the role of the current speaker.
-        """
-        # It uses your _get_metadata helper
-        metadata = _get_metadata(doc)
-        # It has access to 'current_message_role' from the outer scope
-        return metadata.get("current_message_role") == current_message_role.value
-
-    retrieved_docs: list[tuple[Document, float]] = await vector_store.asimilarity_search_with_score(
-        query=query, k=k,
-        filter=role_filter_function
+    # Use the new searcher for consistent filtering across vector stores
+    searcher = VectorStoreSearcher.create(vector_store)
+    retrieved_docs = await searcher.similarity_search_with_filter(
+        query=query,
+        k=k,
+        filter_dict={"current_message_role": current_message_role.value}
     )
 
     # Sort retrieved docs by score
