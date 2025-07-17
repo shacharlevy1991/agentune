@@ -14,14 +14,15 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.vectorstores import VectorStore
 
 from .first_message_prompt import CUSTOMER_FIRST_MESSAGE_PROMPT
-from ._customer_response import CustomerResponse
 from ....models import Conversation, Message
 from ....rag import indexing_and_retrieval
 from ..base import Customer, CustomerFactory
 from .prompt import CUSTOMER_PROMPT
+from ._customer_response import CustomerResponse
 
 
 logger = logging.getLogger(__name__)
+
 
 @frozen
 class RagCustomer(Customer):
@@ -65,11 +66,10 @@ class RagCustomer(Customer):
     async def get_next_message(self, conversation: Conversation) -> Message | None:
         """Generate next customer message using RAG LLM approach."""
         # 1. Retrieval
-        k = 20
         few_shot_examples: list[tuple[Document, float]] = await indexing_and_retrieval.get_few_shot_examples(
             conversation_history=conversation.messages,
             vector_store=self.customer_vector_store,
-            k=k
+            k=20
         )
 
         # 2. Augmentation
@@ -84,9 +84,7 @@ class RagCustomer(Customer):
         formatted_examples = indexing_and_retrieval.format_examples(few_shot_examples)
 
         # Format the current conversation in the same way as the examples
-        formatted_current_convo = "\n".join(
-            [f"{msg.sender.value.capitalize()}: {msg.content}" for msg in conversation.messages]
-        )
+        formatted_current_convo = indexing_and_retrieval.format_conversation(conversation.messages)
         # Add the goal line to the conversation if there's an intent
         goal_line = (
             f"- Your goal in this conversation is: {self.intent_description}"
@@ -120,17 +118,25 @@ class RagCustomer(Customer):
             sender=self.role, content=response_object.response, timestamp=response_timestamp
         )
 
+
 @frozen
 class RagCustomerFactory(CustomerFactory):
     """Factory for creating RAG-based customer participants.
-    
+
     Args:
         model: LangChain chat model for customer responses
         customer_vector_store: Vector store containing customer message examples
     """
-    
+
     model: BaseChatModel
     customer_vector_store: VectorStore
+    seed: int = 0
+    _random: Random = field(init=False, repr=False)
+
+    @_random.default
+    def _create_random(self) -> Random:
+        """Initialize random number generator with the specified seed."""
+        return Random(self.seed)
     
     def create_participant(self) -> RagCustomer:
         """Create a RAG customer participant.
@@ -140,5 +146,6 @@ class RagCustomerFactory(CustomerFactory):
         """
         return RagCustomer(
             customer_vector_store=self.customer_vector_store,
-            model=self.model
+            model=self.model,
+            seed=self._random.randint(0, 1000)
         )
