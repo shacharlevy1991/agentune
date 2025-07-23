@@ -152,6 +152,12 @@ async def get_similar_finished_conversations(
     # Sort by similarity score (highest first)
     retrieved_docs.sort(key=lambda x: x[1], reverse=True)
 
+    # If there is an exact match between the current conversation and one of the examples, remove it
+    retrieved_docs = [
+        (doc, score) for doc, score in retrieved_docs
+        if doc.metadata.get('conversation_hash') != hash(conversation.messages)
+    ]
+
     return retrieved_docs
 
 
