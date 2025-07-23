@@ -4,7 +4,7 @@
 [![PyPI version](https://badge.fury.io/py/agentune-simulate.svg)](https://pypi.org/project/agentune-simulate/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Twitter Follow](https://img.shields.io/twitter/follow/agentune_sb?style=social)](https://x.com/agentune_sb)
-[![Discord](https://img.shields.io/discord/1375004885845807114?color=7289da&label=discord&logo=discord&logoColor=white)](https://discord.gg/Hx5YYAaebz)
+[![Discord](https://img.shields.io/badge/discord-join-blue?logo=discord&logoColor=white)](https://discord.gg/Hx5YYAaebz)
 
 ---
 
@@ -62,7 +62,7 @@ Running a simulation with Agentune Simulate generates realistic conversations be
 1. **Quick Start** - [`getting_started.ipynb`](https://github.com/SparkBeyond/agentune/blob/main/agentune_simulate/examples/getting_started.ipynb) for a quick getting started example
 2. **Production Setup** - [`persistent_storage_example.ipynb`](https://github.com/SparkBeyond/agentune/blob/main/agentune_simulate/examples/persistent_storage_example.ipynb) for a closer to real life, scalable, persistent example  
 3. **Validate _Your_ Data** - Adapt the 2nd example to load _your_ conversations data and validate the simulation. 
-Here is an example of how to load conversations from tabular data: [`load_conversations_from_csv.ipynb`](https://github.com/SparkBeyond/agentune/blob/main/agentune_simulate/examples/load_conversations_from_csv.ipynb)
+Here is an example of how to load conversations from tabular data: [`loading_conversations.ipynb`](https://github.com/SparkBeyond/agentune/blob/main/agentune_simulate/examples/loading_conversations.ipynb)
 4. **Connect Real Agent** - [`real_agent_integration.ipynb`](https://github.com/SparkBeyond/agentune/blob/main/agentune_simulate/examples/real_agent_integration.ipynb) for integrating your existing agent systems
 
 📧 **Need help? Have feedback?** Contact us at [agentune-dev@sparkbeyond.com](mailto:agentune-dev@sparkbeyond.com)
