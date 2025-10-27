@@ -1,3 +1,32 @@
+[project]
+name = "agentune-analyze"
+version = "0.0.1"
+description = "Create a customer simulator (twin) based on a set of real conversations."
+authors = [
+    {name = "Agentune dev team", email = "agentune-dev@sparkbeyond.com"}
+]
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.12,<4.0"
+keywords = ["agent analyzer", "agent evaluation", "customer support", "sales agents", "conversational agents", "AI agents", "chatbot evaluation", "customer-service", "customer facing agents"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: Apache Software License"
+]
+
+[project.urls]
+Repository = "https://github.com/SparkBeyond/agentune"
+Homepage = "https://github.com/SparkBeyond/agentune/tree/main/agentune-analyze"
+Documentation = "https://github.com/SparkBeyond/agentune/tree/main/agentune-analyze"
+
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
