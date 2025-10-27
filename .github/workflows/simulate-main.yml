@@ -5,12 +5,14 @@ on:
     branches:
       - main
     paths:
-      - 'agentune_simulate/**'
+      - 'agentune_simulate/agentune/**'
+      - 'agentune_simulate/tests/**'
   push:
     branches:
       - main
     paths:
-      - 'agentune_simulate/**'
+      - 'agentune_simulate/agentune/**'
+      - 'agentune_simulate/tests/**'
 
 permissions:
   contents: write
