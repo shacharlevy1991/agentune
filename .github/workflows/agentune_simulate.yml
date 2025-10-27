@@ -20,6 +20,6 @@ permissions:
 
 jobs:
   python_tests:
-    uses: ./.github/workflows/python_style.yml
+    uses: ./.github/workflows/python-tests.yml
     with:
       src_path: "agentune_simulate"
