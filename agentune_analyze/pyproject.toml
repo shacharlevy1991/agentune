@@ -22,9 +22,9 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/SparkBeyond/agentune"
-Homepage = "https://github.com/SparkBeyond/agentune/tree/main/agentune-analyze"
-Documentation = "https://github.com/SparkBeyond/agentune/tree/main/agentune-analyze"
+Repository = "https://github.com/shacharlevy1991/agentune"
+Homepage = "https://github.com/shacharlevy1991/agentune/tree/main/agentune_analyze"
+Documentation = "https://github.com/shacharlevy1991/agentune/tree/main/agentune_analyze"
 
 
 [build-system]
